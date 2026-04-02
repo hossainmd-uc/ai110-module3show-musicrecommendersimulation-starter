@@ -4,6 +4,8 @@
 
 In this project you will build and explain a small music recommender system.
 
+My version uses a weighted, content-based scoring system. The recommender compares a user profile against each song in the catalog, gives the most important fields the largest weights, and then ranks songs by their overall relevance score.
+
 Your goal is to:
 
 - Represent songs and a user "taste profile" as data
@@ -21,11 +23,89 @@ Explain your design in plain language.
 
 Some prompts to answer:
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+### Song Features
+
+Each song is represented using the available fields in `data/songs.csv`:
+
+- `genre`
+- `mood`
+- `energy`
+- `tempo_bpm`
+- `valence`
+- `danceability`
+- `acousticness`
+
+### User Profile
+
+The `UserProfile` stores the user's preference ratings for each field. In this system, the most important preferences are the baseline comparison fields:
+
+- `genre`
+- `mood`
+- `energy`
+- `acousticness`
+
+Users can also provide optional preferences for:
+
+- `tempo_bpm`
+- `danceability`
+- `valence`
+
+### Weighting Strategy
+
+The recommender uses a weighted system so that the most important fields influence the final score more strongly than the less important fields. A reasonable starting set of weights is:
+
+- `genre = 0.25`
+- `mood = 0.20`
+- `energy = 0.20`
+- `acousticness = 0.15`
+- `tempo_bpm = 0.10`
+- `danceability = 0.07`
+- `valence = 0.03`
+
+These weights can be adjusted, but the idea is that genre, mood, and energy matter most, while the remaining fields fine-tune the ranking.
+
+### Scoring Rule
+
+For numerical features, the recommender rewards songs that are close to the user's preference rather than simply larger or smaller. The score for one feature is based on the distance between the song value and the user target:
+
+$$
+s_f = e^{-\frac{(x_f - p_f)^2}{2\sigma_f^2}}
+$$
+
+Where:
+
+- $s_f$ = score for one feature
+- $x_f$ = the song's value for that feature
+- $p_f$ = the user's preferred value for that feature
+- $\sigma_f$ = how quickly the score drops as the song moves away from the user's preference
+
+This formula gives a score close to $1$ when the song matches the user's preference and a smaller score as the song gets farther away.
+
+For categorical features like `genre` and `mood`, the recommender can assign a high score when the song matches the user's preference and a lower score when it does not.
+
+### Overall Relevance Score
+
+The final score is a weighted sum of all feature scores:
+
+$$
+R = \sum_i w_i s_i
+$$
+
+Where:
+
+- $R$ = overall relevance score
+- $w_i$ = importance weight for feature $i$
+- $s_i$ = score for feature $i$
+
+The result is normalized to a value from $0$ to $1$, where higher values mean the song is a better match for the user.
+
+### Recommendation Flow
+
+1. Compare each song against the user profile.
+2. Compute a score for each field.
+3. Multiply each field score by its weight.
+4. Add the weighted scores together to get the final relevance score.
+5. Sort songs from highest score to lowest score and return the top results.
 
 You can include a simple diagram or bullet list if helpful.
 
