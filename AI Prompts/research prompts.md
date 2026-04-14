@@ -93,3 +93,105 @@ The README should explain the song features, the user profile fields, the weight
 **Takeaway**
 
 Use plain language for the explanation, but include the math in the system design section so the scoring logic is explicit and easy to justify.
+
+---
+
+## 5. Phase 2 data flow and implementation planning
+
+**Prompt**
+
+Create a quick mental or written map of the data flow: Input (User Prefs) -> Process (loop through songs and score each one) -> Output (Top-K ranking).
+
+Store this as first documentation in Phase2.md.
+
+**Follow-up prompt**
+
+Based on my outline and next steps, outline the methods and variables needed in `UserProfile` to store user taste profile information.
+
+**Answer used**
+
+The data flow was documented as Input -> Process -> Output, and the `UserProfile` was expanded with optional preference fields, feature weights, feature sigmas, validation, and helper methods.
+
+**Takeaway**
+
+Phase 2 started with a clear architecture map, then translated that design into concrete profile fields and methods.
+
+---
+
+## 6. Scoring + ranking implementation prompts
+
+**Prompt**
+
+Implement `load_songs` to organize relevant fields from the CSV. Is dictionary output ideal?
+
+**Follow-up prompt**
+
+Implement `score_song` based on the algorithm recipe, then implement `recommend_songs` to sort by score and return top K in the most Pythonic way.
+
+**Answer used**
+
+`load_songs` was implemented with typed parsing into dictionaries. `score_song` was implemented with weighted categorical + Gaussian numeric scoring and normalized final score. `recommend_songs` now scores all songs, sorts descending, and returns top K.
+
+**Takeaway**
+
+The core simulation loop was fully implemented and aligned to the design formula from Phase 1 and README.
+
+---
+
+## 7. Explainability and output formatting prompts
+
+**Prompt**
+
+Add a "reasons" component so users understand why each score is what it is, using plain language like "Genre match +0.15 points".
+
+**Follow-up prompt**
+
+Format recommendation output in a clean terminal layout with song title, final score, and specific reasons.
+
+**Answer used**
+
+Per-feature reason lines were added and terminal output was reformatted into a readable list with rank, score, and bullet-point reasons.
+
+**Takeaway**
+
+The model became much easier to interpret because each recommendation now shows transparent feature-level contributions.
+
+---
+
+## 8. Debugging weight inconsistency prompts
+
+**Prompt**
+
+I changed feature weights (for example genre down, energy up) but output seems inconsistent. Why?
+
+**Follow-up prompt**
+
+Fix the inconsistency so scoring defaults and profile defaults use the same source of truth.
+
+**Answer used**
+
+The issue came from separate default weight definitions in different parts of the file. The fix was to use shared module-level constants (`DEFAULT_FEATURE_WEIGHTS`, `DEFAULT_FEATURE_SIGMAS`) referenced by both `UserProfile` and `score_song`.
+
+**Takeaway**
+
+Centralized defaults removed confusing behavior and made score explanations consistent with active scoring logic.
+
+---
+
+## 9. Evaluation/model card refinement prompts
+
+**Prompt**
+
+Fill the model card evaluation section using the actual Phase 2 tests and changes, and make comparisons explicit.
+
+**Follow-up prompt**
+
+Keep original prompt text in section headers, and rewrite explanations in plain language for non-programmers.
+
+**Answer used**
+
+The evaluation section now includes A/B profile comparisons, concrete output changes, why those changes make sense, bug-fix impact, and plain-language interpretation.
+
+**Takeaway**
+
+Phase 2 documentation now reflects real evidence from implementation and testing, not just general statements.

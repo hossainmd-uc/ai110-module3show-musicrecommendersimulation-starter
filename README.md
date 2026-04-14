@@ -154,6 +154,11 @@ Use this section to document the experiments you ran. For example:
 - What happened when you added tempo or valence to the score
 - How did your system behave for different types of users
 
+Phase 2 A/B output screenshots:
+
+- Test 1 (decreased genre importance, increased energy importance): [Screenshots/image1.png](Screenshots/image1.png)
+- Test 2 (complementary setup: higher genre importance, lower energy importance): [Screenshots/image2.png](Screenshots/image2.png)
+
 ---
 
 ## Limitations and Risks
