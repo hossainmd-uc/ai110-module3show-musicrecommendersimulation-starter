@@ -1,4 +1,4 @@
-# Phase 1 Progress Summary
+# Phase 1 Progress Summary 
 
 ## What Has Been Decided
 
