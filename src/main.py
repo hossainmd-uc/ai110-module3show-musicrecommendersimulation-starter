@@ -1,5 +1,5 @@
 """
-Command line runner for the Music Recommender Simulation.
+Command line runner for the Music Recommender Simulation. 
 
 This file helps you quickly run and test your recommender.
 
